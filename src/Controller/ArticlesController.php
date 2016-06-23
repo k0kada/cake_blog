@@ -11,6 +11,12 @@ use App\Controller\AppController;
 class ArticlesController extends AppController
 {
 
+    public function initialize()
+    {
+        parent::initialize();
+        $this->loadComponent('Flash');
+    }
+
     /**
      * Index method
      *
