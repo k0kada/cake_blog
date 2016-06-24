@@ -18,11 +18,8 @@ class CategoriesController extends AppController
      */
     public function index()
     {
-        $this->paginate = [
-            'contain' => ['ParentCategories']
-        ];
-        $categories = $this->paginate($this->Categories);
-
+        $categories = $this->Categories->find()
+                        ->order(['lft' => 'ASC']);
         $this->set(compact('categories'));
         $this->set('_serialize', ['categories']);
     }
@@ -109,5 +106,29 @@ class CategoriesController extends AppController
             $this->Flash->error(__('The category could not be deleted. Please, try again.'));
         }
         return $this->redirect(['action' => 'index']);
+    }
+
+    public function moveUp($id = null)
+    {
+        $this->request->allowMethod(['post', 'put']);
+        $category = $this->Categories->get($id);
+        if ($this->Categories->moveUp($category)) {
+            $this->Flash->success('The category has been move Up.');
+        } else {
+            $this->Flash->error('The category could not be moved up.');
+        }
+        return $this->redirect($this->referer(['action' => 'index']));
+    }
+
+    public function moveDown($id = null)
+    {
+        $this->request->allowMethod(['post', 'put']);
+        $category = $this->Categories->get($id);
+        if ($this->Categories->moveDown($category)) {
+            $this->Flash->success('The category has been moved down.');
+        } else {
+            $this->Flash->error('The category could not be moved down. Please, try again.');
+        }
+        return $this->redirect($this->referer(['action' => 'index']));
     }
 }
